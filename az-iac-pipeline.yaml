@@ -1,0 +1,63 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+parameters:
+- name: task
+  displayName: Action
+  type: string
+  default: apply
+  values:
+  - apply
+  - destroy
+
+trigger: 
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: validate
+  jobs:
+    - job: validate
+      continueOnError: false
+      steps:
+      - task: TerraformTaskV3@3
+        displayName: 'Terraform Init'
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Azure-Infra-Connection'
+          backendAzureRmResourceGroupName: 'Infra-RG01'
+          backendAzureRmStorageAccountName: 'infrasatfstate'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'tfstate-file'
+
+      - task: TerraformTaskV3@3
+        condition: eq('${{ parameters.task }}', 'apply')
+        displayName: 'Terraform Plan'
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'Azure-Infra-Connection'
+          commandOptions: '-out=tfplan -input=false -var-file="./dev/terraform.tfvars"'
+      
+      - task: TerraformTaskV3@3
+        condition: eq('${{ parameters.task }}', 'apply')
+        displayName: 'Terraform Apply'
+        inputs:
+          provider: 'azurerm'
+          command: 'apply'
+          environmentServiceNameAzureRM: 'Azure-Infra-Connection'
+          commandOptions: '-var-file=./dev/terraform.tfvars -auto-approve' 
+      
+      - task: TerraformTaskV3@3
+        displayName: 'Terraform Destroy'
+        condition: eq('${{ parameters.task }}', 'destroy')
+        inputs:
+          provider: 'azurerm'
+          command: 'destroy'
+          environmentServiceNameAzureRM: 'Azure-Infra-Connection'
+          commandOptions: '-auto-approve'

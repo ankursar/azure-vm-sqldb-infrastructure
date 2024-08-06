@@ -1,0 +1,23 @@
+resource_group_name          = "dev-rg"
+location                     = "East US"
+vnet_name                    = "dev-vnet"
+vnet_address_space           = ["10.0.0.0/16"]
+subnet_names                 = ["subnet1", "subnet2"]
+subnet_prefixes              = ["10.0.1.0/24", "10.0.2.0/24"]
+vm_name                      = "dev-vm"
+vm_admin_username            = "adminuser"
+vm_admin_password            = "P@ssw0rd1234!" # Use a secure password management practice
+key_vault_name               = "dev-keyvault"
+tenant_id                    = "your-tenant-id"
+admin_password_secret_name   = "vmAdminPassword"
+sql_server_name              = "dev-sql-server"
+sql_database_name            = "dev-sql-database"
+sql_admin_username           = "sqladminuser"
+sql_admin_password           = "SqlP@ssw0rd1234!" # Use a secure password management practice
+sql_admin_secret_name        = "sqlAdminPassword"
+log_analytics_workspace_name = "dev-log-analytics"
+retention_in_days            = 30
+tags = {
+  environment = "development"
+  project     = "myproject"
+}

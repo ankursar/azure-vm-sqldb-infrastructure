@@ -59,5 +59,3 @@ Set as **Repository secrets**
 - Assign the admin role to the 'SRE Retail Tech Platform' team on the repo. That allows us to help contribute and review any PRs.
 
 #### 10. Happy coding
-# azure-vm-sqldb-infrastructure
-# azure-vm-sqldb-infrastructure
